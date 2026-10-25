@@ -9,7 +9,7 @@ Only the official Windows release binaries of Purgo (`Purgo-<version>-Portable.e
 
 ## How release binaries are produced
 
-1. A version tag (`vX.Y.Z`) is pushed to this repository.
+1. The version number in `package.json` is raised on the `main` branch.
 2. The [release workflow](.github/workflows/release.yml) builds Purgo on a GitHub-hosted Windows runner, directly from the public source code.
 3. The unsigned build is submitted to SignPath. The private signing key is kept by SignPath in a hardware security module; it is never available to the project team or to the build machine.
 4. The approver manually reviews and approves the signing request.
