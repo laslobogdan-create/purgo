@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'">
+  <title>Purgo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="grain"></div>
+  <div class="titlebar"></div>
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f7cff"/><stop offset=".5" stop-color="#7c5cff"/><stop offset="1" stop-color="#c66bff"/></linearGradient>
+  </defs></svg>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo" id="logo"></div>
+        <div><b>Purgo</b><small>Uninstaller</small></div>
+      </div>
+      <div class="nav-label">Manage</div>
+      <nav class="nav" id="nav">
+        <div class="nav-pill" id="nav-pill"></div>
+        <button data-page="programs"><span data-i="package"></span>Programs<span class="count" id="c-programs">…</span></button>
+        <button data-page="apps"><span data-i="grid"></span>Windows Apps<span class="count" id="c-apps">·</span></button>
+        <button data-page="startup"><span data-i="rocket"></span>Startup<span class="count" id="c-startup">·</span></button>
+        <button data-page="forced"><span data-i="zap"></span>Forced Uninstall</button>
+      </nav>
+      <div class="side-foot">
+        <button class="side-link" id="open-backups"><span data-i="archive"></span>Registry backups</button>
+        <div class="side-card" id="admin-card"><span class="dot"></span><span id="admin-text">Checking permissions…</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- Programs -->
+      <section class="page" id="programs-page">
+        <div class="page-head">
+          <div><h1>Programs</h1><p>Everything installed on this PC — for all users.</p></div>
+          <div class="spacer"></div>
+          <button class="btn" id="refresh"><span data-i="refresh"></span>Refresh</button>
+        </div>
+        <div id="admin-banner"></div>
+        <div class="stats">
+          <div class="stat"><div class="glow"></div><div class="lbl"><span data-i="package"></span>Installed</div><div class="val" id="s-count">–</div></div>
+          <div class="stat"><div class="glow"></div><div class="lbl"><span data-i="disk"></span>Space used</div><div class="val" id="s-size">–</div></div>
+          <div class="stat"><div class="glow"></div><div class="lbl"><span data-i="sparkle"></span>New this week</div><div class="val" id="s-new">–</div></div>
+          <div class="stat"><div class="glow"></div><div class="lbl"><span data-i="trash"></span>Cleaned by Purgo</div><div class="val" id="s-clean">0 <small>B</small></div></div>
+        </div>
+        <div class="toolbar">
+          <div class="search"><input id="q" placeholder="Search programs, publishers…" spellcheck="false"><span data-i="search"></span><kbd>Ctrl F</kbd></div>
+          <div class="chips" id="filters">
+            <div class="chip-pill"></div>
+            <button data-f="all" class="on">All</button>
+            <button data-f="new">New</button>
+            <button data-f="large">Large</button>
+            <button data-f="b32">32-bit</button>
+            <button data-f="user">Per-user</button>
+          </div>
+        </div>
+        <div class="list-wrap">
+          <div class="list-head" id="phead">
+            <div data-s="sel"><span class="cb" id="cb-all"></span></div>
+            <div data-s="name">Name<span class="arr"></span></div>
+            <div data-s="publisher">Publisher<span class="arr"></span></div>
+            <div data-s="size">Size<span class="arr"></span></div>
+            <div data-s="date">Installed<span class="arr"></span></div>
+            <div data-s="bits">Type<span class="arr"></span></div>
+            <div></div>
+          </div>
+          <div class="list" id="plist"></div>
+        </div>
+        <div class="actionbar" id="actionbar">
+          <div><div class="n" id="ab-n">0 selected</div><div class="s" id="ab-s"></div></div>
+          <div class="sep"></div>
+          <button class="btn ghost sm" id="ab-clear">Clear</button>
+          <button class="btn primary" id="ab-go"><span data-i="trash"></span>Uninstall selected</button>
+        </div>
+      </section>
+
+      <!-- Windows Apps -->
+      <section class="page" id="apps-page">
+        <div class="page-head">
+          <div><h1>Windows Apps</h1><p>Apps from the Microsoft Store and the ones that came with Windows.</p></div>
+          <div class="spacer"></div>
+          <button class="btn" id="refresh-apps"><span data-i="refresh"></span>Refresh</button>
+        </div>
+        <div class="toolbar"><div class="search"><input id="qa" placeholder="Search apps…" spellcheck="false"><span data-i="search"></span></div></div>
+        <div class="grid-wrap"><div class="grid" id="agrid"></div></div>
+      </section>
+
+      <!-- Startup -->
+      <section class="page" id="startup-page">
+        <div class="page-head">
+          <div><h1>Startup</h1><p id="st-sub">Choose what launches when Windows starts.</p></div>
+          <div class="spacer"></div>
+          <button class="btn" id="refresh-startup"><span data-i="refresh"></span>Refresh</button>
+        </div>
+        <div class="list-wrap">
+          <div class="list-head"><div>Program</div><div>Publisher</div><div>Scope</div><div>Status</div><div>Enabled</div></div>
+          <div class="list" id="slist"></div>
+        </div>
+      </section>
+
+      <!-- Forced -->
+      <section class="page" id="forced-page">
+        <div class="page-head"><div><h1>Forced Uninstall</h1><p>Wipe every trace of a program that's broken, half-removed or missing from the list.</p></div></div>
+        <div class="forced-hero" id="forced"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-scrim" id="scrim"></div>
+  <aside class="drawer" id="drawer"></aside>
+  <div class="modal-root" id="modal-root"></div>
+  <div class="toasts" id="toasts"></div>
+
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

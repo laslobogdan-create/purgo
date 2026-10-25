@@ -1,0 +1,5 @@
+[
+ {"wait": 1800},
+ {"js": "startUninstall([P.list.find(p=>p.name==='Discord').id])", "wait": 500},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 7500, "shot": "empty-done"}
+]

@@ -1,0 +1,6 @@
+[
+ {"wait": 1800},
+ {"js": "startUninstall([P.list[3].id])", "wait": 500},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 6000},
+ {"js": "document.querySelector('[data-act=delete-sel]').click()", "wait": 4000, "shot": "final"}
+]

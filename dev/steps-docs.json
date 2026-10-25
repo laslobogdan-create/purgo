@@ -1,0 +1,10 @@
+[
+ {"wait": 2000, "shot": "programs"},
+ {"js": "startUninstall([P.list.find(p=>p.name==='Discord').id])", "wait": 500},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 3600, "shot": "scanning"},
+ {"wait": 1500, "shot": "review"},
+ {"js": "document.querySelector('[data-act=delete-sel]').click()", "wait": 2600, "shot": "done"},
+ {"js": "closeModal(); J=null; P.list.slice(14,18).forEach(p=>P.selected.add(p.id)); renderPrograms(false); startUninstall([...P.selected])", "wait": 600},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 5000, "shot": "batch"},
+ {"js": "closeModal(); go('startup')", "wait": 1300, "shot": "startup"}
+]

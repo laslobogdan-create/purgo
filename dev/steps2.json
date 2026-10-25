@@ -1,0 +1,12 @@
+[
+ {"wait": 1800},
+ {"js": "startUninstall([P.list.find(p=>p.name==='Discord').id])", "wait": 600},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 6200, "shot": "a-scan"},
+ {"js": "closeModal(); J=null; P.list.slice(14,20).forEach(p=>P.selected.add(p.id)); renderPrograms(false)", "wait": 700, "shot": "b-programs-sel"},
+ {"js": "startUninstall([...P.selected])", "wait": 800, "shot": "c-batch-opts"},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 9000, "shot": "d-batch-run"},
+ {"wait": 22000, "shot": "e-batch-done"},
+ {"js": "closeModal(); go('apps')", "wait": 1500, "shot": "f-apps"},
+ {"js": "go('startup')", "wait": 1200, "shot": "g-startup"},
+ {"js": "go('forced'); document.querySelector('#f-name').value='Rock'; document.querySelector('#f-name').dispatchEvent(new Event('input'))", "wait": 900, "shot": "h-forced"}
+]

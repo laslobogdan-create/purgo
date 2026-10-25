@@ -1,0 +1,12 @@
+[
+ {"wait": 2200, "shot": "01-programs"},
+ {"js": "document.querySelectorAll('.row .cb')[2].click(); document.querySelectorAll('.row .cb')[8].click(); document.querySelectorAll('.row .cb')[10].click();", "wait": 900, "shot": "02-selected"},
+ {"js": "P.selected.clear(); renderPrograms(false); document.querySelectorAll('.row')[7].click()", "wait": 900, "shot": "03-drawer"},
+ {"js": "closeDrawer(); startUninstall([P.list.find(p=>p.name==='Discord').id])", "wait": 900, "shot": "04-options"},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 1500, "shot": "05-restore"},
+ {"wait": 1700, "shot": "06-uninstaller"},
+ {"wait": 2400, "shot": "07-scan"},
+ {"wait": 1500, "shot": "08-review"},
+ {"js": "document.querySelector('[data-act=delete-sel]').click()", "wait": 700, "shot": "09-cleaning"},
+ {"wait": 2600, "shot": "10-done"}
+]

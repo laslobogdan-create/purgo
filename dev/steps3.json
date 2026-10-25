@@ -1,0 +1,6 @@
+[
+ {"wait": 1800, "shot": "p1"},
+ {"js": "P.list.slice(14,18).forEach(p=>P.selected.add(p.id)); renderPrograms(false); startUninstall([...P.selected])", "wait": 600},
+ {"js": "document.querySelector('[data-act=start]').click()", "wait": 6800, "shot": "b1"},
+ {"wait": 16000, "shot": "b2"}
+]

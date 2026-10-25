@@ -1,0 +1,63 @@
+name: Build & release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build portable exe
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Upload unsigned build
+        id: upload-unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: purgo-unsigned
+          path: dist/Purgo-*-Portable.exe
+          if-no-files-found: error
+
+      # ---- Code signing (SignPath Foundation) ----
+      # Turned on automatically once the SIGNPATH_API_TOKEN secret and the SIGNPATH_* variables are set.
+      - name: Submit signing request to SignPath
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signed
+
+      - name: Pick release file
+        id: pick
+        shell: bash
+        run: |
+          if [ -d signed ]; then echo "dir=signed" >> "$GITHUB_OUTPUT"; else echo "dir=dist" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.pick.outputs.dir }}/Purgo-*-Portable.exe
+          generate_release_notes: true
