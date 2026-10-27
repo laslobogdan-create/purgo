@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+def ver = new groovy.json.JsonSlurper().parse(file('../version.json'))
+
+android {
+    namespace 'ro.purgo.android'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ro.purgo.android'
+        minSdk 26
+        targetSdk 35
+        versionCode ver.code
+        versionName ver.name
+    }
+
+    signingConfigs {
+        release {
+            def ks = System.getenv('PURGO_KEYSTORE')
+            if (ks && file(ks).exists()) {
+                storeFile file(ks)
+                storePassword System.getenv('PURGO_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('PURGO_KEY_ALIAS') ?: 'purgo'
+                keyPassword System.getenv('PURGO_KEYSTORE_PASSWORD')
+            } else {
+                // Fallback: a stable development key kept in the repo so test builds can update each other.
+                storeFile file('../dev.keystore')
+                storePassword 'purgodev'
+                keyAlias 'purgodev'
+                keyPassword 'purgodev'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { outputFileName = "Purgo-${variant.versionName}.apk" }
+    }
+}

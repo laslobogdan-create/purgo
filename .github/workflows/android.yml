@@ -1,0 +1,90 @@
+name: Android app
+
+# Builds the Purgo Android app. A GitHub release is published when mobile/version.json has "release": true
+# and that version hasn't been released yet.
+on:
+  push:
+    branches: [main]
+    paths: ['mobile/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            echo "PURGO_KEYSTORE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+            echo "Using the release signing key"
+          else
+            echo "::warning::ANDROID_KEYSTORE_B64 secret not set — signing with the development key"
+          fi
+
+      - name: Build APK
+        env:
+          PURGO_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -o pipefail
+          gradle -p mobile assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log
+
+      - name: Report build errors
+        if: failure()
+        run: |
+          grep -E "^e: |error:|What went wrong|\* What|Could not|FAILURE|Exception" build.log | head -60 | while IFS= read -r line; do
+            echo "::error::${line//%/%25}"
+          done
+          sed -n '/What went wrong/,/Try:/p' build.log | head -40 | while IFS= read -r line; do echo "::error::${line//%/%25}"; done
+
+      - name: Read version
+        id: ver
+        run: |
+          echo "name=$(jq -r .name mobile/version.json)" >> "$GITHUB_OUTPUT"
+          echo "release=$(jq -r '.release // false' mobile/version.json)" >> "$GITHUB_OUTPUT"
+          ls -la mobile/app/build/outputs/apk/release/
+          echo "::notice::Built $(ls mobile/app/build/outputs/apk/release/*.apk | xargs -n1 basename) ($(du -h mobile/app/build/outputs/apk/release/*.apk | cut -f1))"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: purgo-android
+          path: mobile/app/build/outputs/apk/release/*.apk
+
+      - name: Check release
+        id: rel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "android-v${{ steps.ver.outputs.name }}" >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Publish release
+        if: steps.ver.outputs.release == 'true' && steps.rel.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-v${{ steps.ver.outputs.name }}
+          name: Purgo for Android ${{ steps.ver.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          make_latest: false
+          files: mobile/app/build/outputs/apk/release/*.apk
+          body: |
+            **Purgo for Android ${{ steps.ver.outputs.name }}**
+
+            Download `Purgo-${{ steps.ver.outputs.name }}.apk` below on your phone, open it and allow installing from this source.
+            Requires Android 8.0 or newer.
