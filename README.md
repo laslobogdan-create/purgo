@@ -25,6 +25,30 @@ Most uninstallers that ship with programs leave things behind: folders in AppDat
 - **Windows Apps** — remove Microsoft Store apps.
 - **Startup manager** — enable, disable or delete programs that start with Windows (same mechanism as Task Manager).
 
+## Purgo for Android
+
+The same idea, for your phone: find what's eating your storage and clean it with a tap.
+
+<p align="center">
+  <img src="docs/screenshots/android/dashboard.png" width="200" alt="Dashboard">
+  <img src="docs/screenshots/android/junk.png" width="200" alt="Junk files">
+  <img src="docs/screenshots/android/photos.png" width="200" alt="Smart photos">
+  <img src="docs/screenshots/android/done.png" width="200" alt="Cleaned">
+</p>
+
+- **Smart scan** — storage overview with everything you can free in one place.
+- **Junk files** — temp and log files, thumbnail cache, installer files of apps you already have, leftovers of removed apps, empty folders.
+- **Large files** — sorted by size, filter by type, preview before deleting.
+- **Duplicates** — byte-identical copies; the original is kept automatically.
+- **Smart photos** — similar shots (keeps the sharpest), blurry, very dark photos and old screenshots. Analysed on the phone.
+- **WhatsApp & Telegram** — received and sent photos, videos, voice notes and documents by category.
+- **Apps** — sizes, cache, last used, unused-app filter and multi-uninstall.
+- **App cache** — cache per app and "clean all app caches" (Android 11+).
+- **Storage explorer** and **Purgo Bin** — everything you delete can be restored for 30 days.
+
+Download `Purgo-x.y.z.apk` from the [Android releases](https://github.com/laslobogdan-create/purgo/releases?q=android&expanded=true). Requires Android 8.0+.
+Purgo needs **All files access** (to find and delete files) and, optionally, **Usage access** (app sizes and last-used times). It has no internet permission at all.
+
 ## Safety first
 
 - Files and folders are moved to the **Recycle Bin**, not deleted permanently.
