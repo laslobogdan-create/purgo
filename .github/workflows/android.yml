@@ -67,6 +67,12 @@ jobs:
           name: purgo-android
           path: mobile/app/build/outputs/apk/release/*.apk
 
+      - name: Require the release key for public releases
+        if: steps.ver.outputs.release == 'true' && env.PURGO_KEYSTORE == ''
+        run: |
+          echo "::warning::Not publishing: public releases must be signed with the private key (ANDROID_KEYSTORE_B64 / ANDROID_KEYSTORE_PASSWORD secrets)."
+          echo "SKIP_RELEASE=true" >> "$GITHUB_ENV"
+
       - name: Check release
         id: rel
         env:
@@ -75,7 +81,7 @@ jobs:
           if gh release view "android-v${{ steps.ver.outputs.name }}" >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
 
       - name: Publish release
-        if: steps.ver.outputs.release == 'true' && steps.rel.outputs.exists == 'false'
+        if: steps.ver.outputs.release == 'true' && steps.rel.outputs.exists == 'false' && env.SKIP_RELEASE != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: android-v${{ steps.ver.outputs.name }}
