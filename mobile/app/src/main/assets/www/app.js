@@ -495,7 +495,7 @@ PAGES.home = {
     if (S.scan) { this.drawSegments(); this.renderFound(); } else this.renderIdle();
   },
   renderIdle() {
-    $('#scanbox').innerHTML = `<button class="btn primary block shine" id="smart" style="height:56px;font-size:16px">${icon('radar')}Smart scan</button>
+    $('#scanbox').innerHTML = `<button class="btn primary wide shine" id="smart">${icon('radar')}Smart scan</button>
       <div class="now">Finds junk, duplicates, big files and more</div>`;
     $('#smart').onclick = () => this.smartScan();
   },
@@ -512,7 +512,7 @@ PAGES.home = {
   },
   async smartScan() {
     const box = $('#scanbox'); const ring = $('#ring'); ring.classList.add('scanning');
-    box.innerHTML = `<div class="btn block" style="pointer-events:none;height:56px"><span class="spin" style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#a48bff;animation:spin .8s linear infinite"></span>Scanning your phone…</div><div class="now" id="now">Starting</div>`;
+    box.innerHTML = `<div class="btn wide" style="pointer-events:none"><span class="spin" style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#a48bff;animation:spin .8s linear infinite"></span>Scanning your phone…</div><div class="now" id="now">Starting</div>`;
     try {
       S.scan = await N.call('scan', {}, pr => { const n = $('#now'); if (n) n.textContent = `${(pr.files || 0).toLocaleString()} files · ${(pr.dir || '').replace(ROOT(), '') || '/'}`; });
     } catch (e) { ring.classList.remove('scanning'); this.renderIdle(); toast('Scan failed: ' + (e.error || e), 'alert'); return; }
@@ -531,7 +531,7 @@ PAGES.home = {
     ];
     box.innerHTML = `<div class="card" style="text-align:center;margin-bottom:12px;padding:18px"><div style="color:var(--muted);font-size:13px">You can free up to</div><div id="total-free" style="font-size:38px;font-weight:800;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;color:transparent" data-v="0">…</div></div>
       <div class="found">${cards.map(([id, t, d, ic, h], i) => `<div class="fcard" data-go="${id}" style="animation-delay:${i * 70}ms"><div class="fi ${h}">${icon(ic)}</div><div class="ft"><b>${t}</b><span id="fd-${id}">${d}</span></div><div class="fs" id="fs-${id}"><span class="spin"></span></div></div>`).join('')}</div>
-      <button class="btn ghost block" id="rescan" style="margin-top:6px">${icon('radar')}Scan again</button>`;
+      <button class="btn ghost wide" id="rescan" style="margin-top:6px">${icon('radar')}Scan again</button>`;
     box.onclick = e => { const c = e.target.closest('[data-go]'); if (c) Router.go(c.dataset.go); };
     $('#rescan').onclick = () => { S.scan = null; invalidate(); this.smartScan(); };
     let total = 0;
@@ -822,13 +822,13 @@ PAGES.cache = {
   async render(el, p, entry) {
     el.innerHTML = skeleton(6);
     const data = S.results.apps || (S.results.apps = await N.call('apps'));
-    if (!data.usage) { el.innerHTML = `<div class="banner warn"><div class="bi">${icon('key')}</div><div class="t"><b>Usage access needed</b>Android only shows app cache sizes to apps you allow.</div></div><button class="btn primary block" id="grant">${icon('key')}Allow usage access</button>`; $('#grant').onclick = () => N.call('requestUsage'); return; }
+    if (!data.usage) { el.innerHTML = `<div class="banner warn"><div class="bi">${icon('key')}</div><div class="t"><b>Usage access needed</b>Android only shows app cache sizes to apps you allow.</div></div><button class="btn primary wide" id="grant">${icon('key')}Allow usage access</button>`; $('#grant').onclick = () => N.call('requestUsage'); return; }
     const apps = data.apps.filter(a => a.cache > 0).sort((a, b) => b.cache - a.cache);
     setTitle(entry, 'App cache', `${fmt(data.totalCache)} across ${apps.length} apps`);
     const max = Math.max(1, ...apps.map(a => a.cache));
     el.innerHTML = `<div class="card" style="text-align:center;padding:24px 16px 18px"><div style="color:var(--muted);font-size:13px">Cache used by your apps</div>
       <div id="cache-total" style="font-size:44px;font-weight:800;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;color:transparent;margin:6px 0 14px" data-v="0">0 B</div>
-      ${S.env.canClearAllCache ? `<button class="btn primary block shine" id="clearall">${icon('zap')}Clean all app caches</button><div style="color:var(--faint);font-size:12px;margin-top:10px;line-height:1.5">Android asks you to confirm. Clears the cache files apps keep on shared storage — apps rebuild them when needed.</div>` : `<div style="color:var(--muted);font-size:12.5px">Your Android version only lets you clear cache per app.</div>`}</div>
+      ${S.env.canClearAllCache ? `<button class="btn primary wide shine" id="clearall">${icon('zap')}Clean all app caches</button><div style="color:var(--faint);font-size:12px;margin-top:10px;line-height:1.5">Android asks you to confirm. Clears the cache files apps keep on shared storage — apps rebuild them when needed.</div>` : `<div style="color:var(--muted);font-size:12.5px">Your Android version only lets you clear cache per app.</div>`}</div>
       <div class="sec">Biggest caches<span class="ln"></span></div><div class="list" id="cl"></div>
       <p style="color:var(--faint);font-size:12px;line-height:1.5;margin:14px 6px">Tap an app to open its Android settings page, then tap <b>Storage → Clear cache</b>. Android doesn't allow any app to clear another app's internal cache by itself.</p>`;
     countUp($('#cache-total', el), data.totalCache, v => fmt(v), 1200);
@@ -949,8 +949,8 @@ function onboarding() {
     o.innerHTML = `<div class="hero"><div class="biglogo">${icon('logo')}</div><h2>Welcome to Purgo</h2><p>Find junk, duplicates and big files, clean chat media and remove apps you don't use — all on your phone, nothing uploaded.</p></div>
       <div class="perm ${e.allFiles ? 'done' : ''}" style="animation-delay:.1s"><div class="pi hue-violet">${icon('folder')}</div><div class="t"><b>All files access</b><span>Required — lets Purgo find and remove files. Turn on “Allow access to manage all files”.</span></div>${e.allFiles ? `<span class="st">${icon('check')}</span>` : ''}</div>
       <div class="perm ${e.usage ? 'done' : ''}" style="animation-delay:.2s"><div class="pi hue-amber">${icon('chart')}</div><div class="t"><b>Usage access</b><span>Optional — shows app sizes, cache and unused apps.</span></div>${e.usage ? `<span class="st">${icon('check')}</span>` : ''}</div>
-      <button class="btn primary block shine" id="onb-go" style="height:56px;margin-top:10px">${e.allFiles ? (e.usage ? 'Get started' : 'Allow usage access') : 'Allow file access'}</button>
-      ${e.allFiles && !e.usage ? '<button class="btn ghost block" id="onb-skip" style="margin-top:6px">Skip for now</button>' : ''}`;
+      <button class="btn primary wide shine" id="onb-go" style="margin-top:12px">${e.allFiles ? (e.usage ? 'Get started' : 'Allow usage access') : 'Allow file access'}</button>
+      ${e.allFiles && !e.usage ? '<button class="btn ghost wide" id="onb-skip" style="margin-top:6px">Skip for now</button>' : ''}`;
     $('#onb-go', o).onclick = () => { if (!S.env.allFiles) N.call('requestAllFiles'); else if (!S.env.usage) N.call('requestUsage'); else finish(); };
     const sk = $('#onb-skip', o); if (sk) sk.onclick = finish;
   };

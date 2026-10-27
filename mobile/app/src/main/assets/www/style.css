@@ -35,12 +35,12 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .topbar.scrolled { border-bottom-color: var(--line); }
 .topbar h1 { flex: 1; margin: 0; font-size: 19px; letter-spacing: -.02em; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .25s; }
 .topbar .sub { display: block; font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-.ib { all: unset; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; cursor: pointer; color: var(--text-2); flex: none; transition: background .2s, transform .15s; position: relative; }
+.ib { all: unset; box-sizing: border-box; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; cursor: pointer; color: var(--text-2); flex: none; transition: background .2s, transform .15s; position: relative; }
 .ib:active { background: var(--panel-2); transform: scale(.92); }
 .ib .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b9a; box-shadow: 0 0 8px #ff6b9a; }
 .topbar.sel { background: linear-gradient(90deg, rgba(79,124,255,.25), rgba(180,92,255,.22)), rgba(9,10,20,.95); }
 .view { flex: 1; position: relative; overflow: hidden; }
-.page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 6px 16px calc(var(--sab) + 110px); -webkit-overflow-scrolling: touch; }
+.page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 6px max(16px, calc(50% - 320px)) calc(var(--sab) + 110px); -webkit-overflow-scrolling: touch; }
 .page.enter { animation: pageIn .42s var(--ease) both; }
 .page.enter-back { animation: pageBack .42s var(--ease) both; }
 .page.leave { animation: pageOut .3s var(--ease) both; pointer-events: none; }
@@ -65,7 +65,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .bar i { display: block; height: 100%; border-radius: 8px; background: var(--grad); transition: width 1s var(--ease); }
 .nav { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
 .nav-label { color: var(--faint); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; padding: 14px 14px 6px; }
-.nav button { all: unset; display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; color: var(--text-2); font-weight: 500; cursor: pointer; transition: background .2s, color .2s; position: relative; }
+.nav button { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; color: var(--text-2); font-weight: 500; cursor: pointer; transition: background .2s, color .2s; position: relative; }
 .nav button svg { width: 21px; height: 21px; }
 .nav button:active { background: var(--panel-2); }
 .nav button.on { color: #fff; background: var(--grad-soft); box-shadow: inset 0 0 0 1px rgba(139,92,246,.35); }
@@ -78,7 +78,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .card { border-radius: 20px; background: var(--panel); border: 1px solid var(--line); padding: 16px; position: relative; overflow: hidden; }
 .sec { color: var(--faint); font-size: 11.5px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; margin: 22px 4px 10px; display: flex; align-items: center; gap: 10px; }
 .sec .ln { flex: 1; height: 1px; background: var(--line); }
-.btn { all: unset; display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 20px; border-radius: 16px; font-weight: 650; font-size: 15px; background: var(--panel-2); border: 1px solid var(--line-2); color: var(--text); cursor: pointer; transition: transform .15s var(--ease), filter .2s, opacity .2s; white-space: nowrap; position: relative; overflow: hidden; }
+.btn { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 20px; border-radius: 16px; font-weight: 650; font-size: 15px; background: var(--panel-2); border: 1px solid var(--line-2); color: var(--text); cursor: pointer; transition: transform .15s var(--ease), filter .2s, opacity .2s; white-space: nowrap; position: relative; overflow: hidden; }
 .btn:active { transform: scale(.96); }
 .btn svg { width: 19px; height: 19px; }
 .btn.primary { background: var(--grad); border: none; color: #fff; box-shadow: 0 12px 30px -10px rgba(124,92,255,.85), inset 0 1px 0 rgba(255,255,255,.25); }
@@ -86,11 +86,12 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .btn.ghost { background: transparent; border-color: transparent; }
 .btn.sm { height: 38px; padding: 0 14px; font-size: 13.5px; border-radius: 12px; }
 .btn.block { display: flex; width: 100%; }
+.btn.wide { display: flex; width: min(100%, 320px); height: 52px; margin: 0 auto; font-size: 15.5px; border-radius: 18px; }
 .btn[disabled] { opacity: .4; pointer-events: none; }
 .btn.shine::after { content: ''; position: absolute; top: 0; bottom: 0; width: 70px; left: -90px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-20deg); animation: shine 3.2s var(--ease) infinite 1s; }
 @keyframes shine { 0% { left: -90px; } 30%, 100% { left: 120%; } }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 16px 4px; margin: 0 -16px 12px; scrollbar-width: none; }
-.chip { all: unset; flex: none; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 550; color: var(--text-2); background: var(--panel); border: 1px solid var(--line); cursor: pointer; transition: all .25s var(--ease); }
+.chip { all: unset; box-sizing: border-box; flex: none; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 550; color: var(--text-2); background: var(--panel); border: 1px solid var(--line); cursor: pointer; transition: all .25s var(--ease); }
 .chip.on { color: #fff; background: rgba(124,92,255,.3); border-color: rgba(160,130,255,.5); box-shadow: 0 4px 16px -6px rgba(124,92,255,.8); }
 .badge { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 6px; letter-spacing: .02em; }
 .badge.keep { background: rgba(52,211,153,.18); color: #7ef0c3; }
@@ -148,7 +149,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .fcard .fs small { display: block; color: var(--faint); font-weight: 500; font-size: 11px; margin-top: 2px; }
 .fcard .spin { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,.12); border-top-color: #a48bff; animation: spin .8s linear infinite; }
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.tile { all: unset; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 16px 6px 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); font-size: 12px; font-weight: 550; color: var(--text-2); text-align: center; cursor: pointer; transition: transform .2s var(--ease); animation: pop .5s var(--spring) both; }
+.tile { all: unset; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 16px 6px 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); font-size: 12px; font-weight: 550; color: var(--text-2); text-align: center; cursor: pointer; transition: transform .2s var(--ease); animation: pop .5s var(--spring) both; }
 .tile:active { transform: scale(.94); }
 .tile .ti { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; }
 .tile .ti svg { width: 22px; height: 22px; }
@@ -205,7 +206,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .group-head b { color: var(--text); font-weight: 650; }
 .group-head .sp { flex: 1; }
 .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); margin-bottom: 14px; position: relative; }
-.tabs button { all: unset; flex: 1; text-align: center; padding: 9px 4px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--muted); position: relative; z-index: 1; transition: color .25s; }
+.tabs button { all: unset; box-sizing: border-box; flex: 1; text-align: center; padding: 9px 4px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--muted); position: relative; z-index: 1; transition: color .25s; }
 .tabs button.on { color: #fff; }
 .tabs button small { display: block; font-size: 10.5px; font-weight: 500; opacity: .75; margin-top: 1px; }
 .tabs .pill { position: absolute; top: 4px; bottom: 4px; border-radius: 12px; background: rgba(124,92,255,.35); border: 1px solid rgba(160,130,255,.4); transition: left .4s var(--spring), width .4s var(--spring); }
@@ -226,8 +227,8 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .jcat.done { opacity: .5; }
 
 /* ---------- selection bar ---------- */
-.selbar { position: fixed; left: 12px; right: 12px; bottom: calc(var(--sab) + 12px); z-index: 40; display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 18px; border-radius: 22px; background: rgba(22,22,46,.9); backdrop-filter: blur(24px) saturate(1.4); border: 1px solid rgba(139,92,246,.4); box-shadow: 0 24px 50px -10px rgba(0,0,0,.85), 0 0 50px -16px rgba(124,92,255,.8); transform: translateY(160%); transition: transform .5s var(--spring); }
-.selbar.show { transform: none; }
+.selbar { position: fixed; left: 50%; width: min(calc(100% - 24px), 480px); bottom: calc(var(--sab) + 12px); visibility: hidden; z-index: 40; display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 18px; border-radius: 22px; background: rgba(22,22,46,.9); backdrop-filter: blur(24px) saturate(1.4); border: 1px solid rgba(139,92,246,.4); box-shadow: 0 24px 50px -10px rgba(0,0,0,.85), 0 0 50px -16px rgba(124,92,255,.8); transform: translate(-50%, calc(100% + var(--sab) + 60px)); transition: transform .5s var(--spring), visibility 0s .5s; }
+.selbar.show { transform: translate(-50%, 0); visibility: visible; transition: transform .5s var(--spring), visibility 0s; }
 .selbar .t { flex: 1; min-width: 0; }
 .selbar .t b { display: block; font-size: 15px; }
 .selbar .t span { color: var(--muted); font-size: 12.5px; }
@@ -237,7 +238,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 /* ---------- sheets ---------- */
 .sheet-root { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; background: rgba(3,4,10,.55); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; }
 .sheet-root.show { opacity: 1; }
-.sheet { width: 100%; max-height: 88vh; overflow-y: auto; border-radius: 28px 28px 0 0; background: #121329; border-top: 1px solid var(--line-2); padding: 12px 20px calc(var(--sab) + 22px); transform: translateY(100%); transition: transform .5s var(--ease); box-shadow: 0 -30px 80px -20px rgba(124,92,255,.35); position: relative; }
+.sheet { width: 100%; max-width: 640px; margin: 0 auto; max-height: 88vh; overflow-y: auto; border-radius: 28px 28px 0 0; background: #121329; border-top: 1px solid var(--line-2); padding: 12px 20px calc(var(--sab) + 22px); transform: translateY(100%); transition: transform .5s var(--ease); box-shadow: 0 -30px 80px -20px rgba(124,92,255,.35); position: relative; }
 .sheet-root.show .sheet { transform: none; }
 .sheet .grab { width: 40px; height: 5px; border-radius: 5px; background: rgba(255,255,255,.18); margin: 0 auto 16px; }
 .sheet h3 { margin: 4px 0 6px; font-size: 20px; letter-spacing: -.02em; }
@@ -300,7 +301,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .viewer .vstage .other .big svg { width: 50px; height: 50px; color: #b9aaff; }
 .viewer .vstage .other audio { width: 100%; margin-top: 18px; }
 .viewer .vacts { display: flex; justify-content: space-around; }
-.viewer .vacts button { all: unset; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: rgba(255,255,255,.85); padding: 8px 14px; border-radius: 14px; }
+.viewer .vacts button { all: unset; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: rgba(255,255,255,.85); padding: 8px 14px; border-radius: 14px; }
 .viewer .vacts button:active { background: rgba(255,255,255,.1); }
 .viewer .vacts button.red { color: #ff8aa3; }
 .viewer .vpath { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,.5); padding: 0 10px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl; text-align: left; }
@@ -323,7 +324,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 
 /* explorer */
 .crumbs { display: flex; gap: 4px; align-items: center; overflow-x: auto; margin: 0 -16px 12px; padding: 0 16px; white-space: nowrap; font-size: 13px; }
-.crumbs button { all: unset; padding: 6px 10px; border-radius: 10px; color: var(--muted); }
+.crumbs button { all: unset; box-sizing: border-box; padding: 6px 10px; border-radius: 10px; color: var(--muted); }
 .crumbs button:last-child { color: #fff; background: var(--panel-2); }
 .crumbs svg { width: 14px; height: 14px; color: var(--faint); }
 
@@ -336,7 +337,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 @keyframes toastOut { to { opacity: 0; transform: translateY(10px); } }
 
 /* onboarding */
-.onb { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; flex-direction: column; padding: calc(var(--sat) + 30px) 26px calc(var(--sab) + 26px); overflow-y: auto; }
+.onb { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: flex; flex-direction: column; padding: calc(var(--sat) + 30px) max(26px, calc(50% - 300px)) calc(var(--sab) + 26px); overflow-y: auto; }
 .onb .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .onb .biglogo { width: 112px; height: 112px; border-radius: 34px; background: var(--grad); display: grid; place-items: center; box-shadow: 0 30px 80px -20px rgba(124,92,255,.9); animation: float 4s ease-in-out infinite; }
 .onb .biglogo svg { width: 58px; height: 58px; stroke: #fff; stroke-width: 2; }
