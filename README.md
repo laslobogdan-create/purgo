@@ -47,7 +47,7 @@ The same idea, for your phone: find what's eating your storage and clean it with
 - **Storage explorer** and **Purgo Bin** — everything you delete can be restored for 30 days.
 
 Download `Purgo-x.y.z.apk` from the [Android releases](https://github.com/laslobogdan-create/purgo/releases?q=android&expanded=true). Requires Android 8.0+.
-Purgo needs **All files access** (to find and delete files) and, optionally, **Usage access** (app sizes and last-used times). It has no internet permission at all.
+Purgo needs **All files access** (to find and delete files) and, optionally, **Usage access** (app sizes and last-used times). It works fully offline: nothing about your files or apps ever leaves the phone.
 
 ## Safety first
 
