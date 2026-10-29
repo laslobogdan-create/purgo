@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
-        android:label="Purgo"
+        android:label="Purgo Uninstaller &amp; Cleaner"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/PurgoTheme"

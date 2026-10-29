@@ -85,12 +85,12 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: android-v${{ steps.ver.outputs.name }}
-          name: Purgo for Android ${{ steps.ver.outputs.name }}
+          name: Purgo Uninstaller & Cleaner for Android ${{ steps.ver.outputs.name }}
           target_commitish: ${{ github.sha }}
           make_latest: false
           files: mobile/app/build/outputs/apk/release/*.apk
           body: |
-            **Purgo for Android ${{ steps.ver.outputs.name }}**
+            **Purgo Uninstaller & Cleaner for Android ${{ steps.ver.outputs.name }}**
 
             Download `Purgo-${{ steps.ver.outputs.name }}.apk` below on your phone, open it and allow installing from this source.
             Requires Android 8.0 or newer.

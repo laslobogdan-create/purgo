@@ -236,7 +236,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .fab { position: fixed; right: 16px; bottom: calc(var(--sab) + 18px); z-index: 39; }
 
 /* ---------- sheets ---------- */
-.sheet-root { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; background: rgba(3,4,10,.55); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; }
+.sheet-root { position: fixed; inset: 0; z-index: 110; display: flex; align-items: flex-end; background: rgba(3,4,10,.55); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; }
 .sheet-root.show { opacity: 1; }
 .sheet { width: 100%; max-width: 640px; margin: 0 auto; max-height: 88vh; overflow-y: auto; border-radius: 28px 28px 0 0; background: #121329; border-top: 1px solid var(--line-2); padding: 12px 20px calc(var(--sab) + 22px); transform: translateY(100%); transition: transform .5s var(--ease); box-shadow: 0 -30px 80px -20px rgba(124,92,255,.35); position: relative; }
 .sheet-root.show .sheet { transform: none; }
@@ -351,3 +351,7 @@ svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-widt
 .perm .st svg { width: 26px; height: 26px; }
 .perm.done { border-color: rgba(52,211,153,.3); background: rgba(52,211,153,.05); }
 .mono { font-family: var(--mono); font-size: 12px; }
+
+.optrow .t span b { display: inline; color: var(--text); font-weight: 650; }
+.sheet .acts.col { flex-direction: column-reverse; }
+.sheet .acts.col .btn { flex: none; width: 100%; }

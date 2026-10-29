@@ -758,7 +758,7 @@ PAGES.apps = {
     const max = Math.max(1, ...apps.map(a => a.total || 0));
     el.innerHTML = (data.usage ? '' : `<div class="banner warn"><div class="bi">${icon('key')}</div><div class="t"><b>See app sizes and usage</b>Allow "Usage access" so Purgo can show how big each app is and when you last used it.</div><button class="btn sm" id="grant">Allow</button></div>`) +
       `<div class="chips"><button class="chip ${!this.unused ? 'on' : ''}" data-u="0">All apps</button><button class="chip ${this.unused ? 'on' : ''}" data-u="1">Not used in 30 days${unusedCount ? ' · ' + unusedCount : ''}</button></div><div class="list" id="al"></div>`;
-    const g = $('#grant', el); if (g) g.onclick = () => N.call('requestUsage');
+    const g = $('#grant', el); if (g) g.onclick = usageHelp;
     $$('[data-u]', el).forEach(b => b.onclick = () => { this.unused = b.dataset.u === '1'; entry.refresh(); });
     const items = apps.map(a => Object.assign(a, { p: 'pkg:' + a.pkg, s: a.total || 0 }));
     const map = new Map(items.map(i => [i.p, i]));
@@ -822,7 +822,7 @@ PAGES.cache = {
   async render(el, p, entry) {
     el.innerHTML = skeleton(6);
     const data = S.results.apps || (S.results.apps = await N.call('apps'));
-    if (!data.usage) { el.innerHTML = `<div class="banner warn"><div class="bi">${icon('key')}</div><div class="t"><b>Usage access needed</b>Android only shows app cache sizes to apps you allow.</div></div><button class="btn primary wide" id="grant">${icon('key')}Allow usage access</button>`; $('#grant').onclick = () => N.call('requestUsage'); return; }
+    if (!data.usage) { el.innerHTML = `<div class="banner warn"><div class="bi">${icon('key')}</div><div class="t"><b>Usage access needed</b>Android only shows app cache sizes to apps you allow.</div></div><button class="btn primary wide" id="grant">${icon('key')}Allow usage access</button>`; $('#grant').onclick = usageHelp; return; }
     const apps = data.apps.filter(a => a.cache > 0).sort((a, b) => b.cache - a.cache);
     setTitle(entry, 'App cache', `${fmt(data.totalCache)} across ${apps.length} apps`);
     const max = Math.max(1, ...apps.map(a => a.cache));
@@ -930,16 +930,35 @@ PAGES.settings = {
       <div class="perm ${e.usage ? 'done' : ''}"><div class="pi hue-amber">${icon('chart')}</div><div class="t"><b>Usage access</b><span>Shows app sizes, cache and when you last used each app</span></div>${e.usage ? `<span class="st">${icon('check')}</span>` : `<button class="btn sm primary" data-req="requestUsage">Allow</button>`}</div>
       <div class="sec">About<span class="ln"></span></div>
       <div class="card" style="padding:4px 14px">
-        <div class="optrow"><div class="t"><b>Purgo for Android</b><span>Version ${esc(e.version)} · ${esc(e.device)}</span></div></div>
+        <div class="optrow"><div class="t"><b>Purgo Uninstaller &amp; Cleaner</b><span>Version ${esc(e.version)} · ${esc(e.device)}</span></div></div>
         <div class="optrow"><div class="t"><b>Privacy</b><span>Purgo works entirely offline. Nothing about your files or apps ever leaves your phone.</span></div></div>
         <div class="optrow" id="gh" style="cursor:pointer"><div class="t"><b>Open source</b><span>github.com/laslobogdan-create/purgo · GPL-3.0</span></div>${icon('github')}</div>
         <div class="optrow"><div class="t"><b>Freed so far</b><span>${fmt(S.freed)}</span></div></div>
       </div>`;
     $('#sw-bin', el).onclick = ev => { const on = !ev.currentTarget.classList.contains('on'); ev.currentTarget.classList.toggle('on', on); S.env.bin = on; N.call('setSetting', { key: 'bin', value: on }); };
-    $$('[data-req]', el).forEach(b => b.onclick = () => N.call(b.dataset.req));
+    $$('[data-req]', el).forEach(b => b.onclick = () => b.dataset.req === 'requestUsage' ? usageHelp() : N.call(b.dataset.req));
     $('#gh', el).onclick = () => N.call('openUrl', { url: 'https://github.com/laslobogdan-create/purgo' });
   },
 };
+
+// ======================================================================== usage access helper
+/** Android 13+ blocks "Usage access" for apps installed from an APK until the user allows restricted settings. */
+function usageHelp() {
+  if (!S.env || S.env.sdk < 33) { N.call('requestUsage'); return; }
+  const step = (n, t, d) => `<div class="optrow" style="align-items:flex-start"><div class="pi hue-violet" style="width:30px;height:30px;border-radius:10px;display:grid;place-items:center;flex:none;font-weight:700">${n}</div><div class="t"><b>${t}</b><span>${d}</span></div></div>`;
+  const s = sheet(`<div class="si hue-amber">${icon('key')}</div><h3>Allow usage access</h3>
+    <p>Android protects this setting for apps installed outside the Play Store. It takes 3 quick steps — you only do it once.</p>
+    ${step(1, 'Try to turn it on', 'Tap <b>Open Usage access</b>, find Purgo and tap the switch. If Android says <b>“Restricted setting”</b>, tap OK and come back.')}
+    ${step(2, 'Allow restricted settings', 'Tap <b>Open Purgo app info</b>, then the <b>⋮</b> menu (top-right) → <b>Allow restricted settings</b> and confirm with your PIN or fingerprint.')}
+    ${step(3, 'Turn it on', 'Open Usage access again and switch Purgo on.')}
+    <div class="acts col"><button class="btn" data-u="info">${icon('info')}Open Purgo app info</button><button class="btn primary" data-u="usage">${icon('chart')}Open Usage access</button></div>`);
+  s.el.addEventListener('click', e => {
+    const b = e.target.closest('[data-u]'); if (!b) return;
+    if (b.dataset.u === 'usage') N.call('requestUsage'); else N.call('appSettings', { pkg: 'ro.purgo.android' });
+  });
+  const off = () => { if (S.env.usage) { s.close(); toast('Usage access is on'); } };
+  N.on('resume', () => setTimeout(off, 400));
+}
 
 // ======================================================================== onboarding
 function onboarding() {
@@ -951,7 +970,7 @@ function onboarding() {
       <div class="perm ${e.usage ? 'done' : ''}" style="animation-delay:.2s"><div class="pi hue-amber">${icon('chart')}</div><div class="t"><b>Usage access</b><span>Optional — shows app sizes, cache and unused apps.</span></div>${e.usage ? `<span class="st">${icon('check')}</span>` : ''}</div>
       <button class="btn primary wide shine" id="onb-go" style="margin-top:12px">${e.allFiles ? (e.usage ? 'Get started' : 'Allow usage access') : 'Allow file access'}</button>
       ${e.allFiles && !e.usage ? '<button class="btn ghost wide" id="onb-skip" style="margin-top:6px">Skip for now</button>' : ''}`;
-    $('#onb-go', o).onclick = () => { if (!S.env.allFiles) N.call('requestAllFiles'); else if (!S.env.usage) N.call('requestUsage'); else finish(); };
+    $('#onb-go', o).onclick = () => { if (!S.env.allFiles) N.call('requestAllFiles'); else if (!S.env.usage) usageHelp(); else finish(); };
     const sk = $('#onb-skip', o); if (sk) sk.onclick = finish;
   };
   const finish = () => { localStorage.setItem('purgo.onb', '1'); o.style.transition = 'opacity .4s, transform .4s'; o.style.opacity = 0; o.style.transform = 'scale(1.04)'; setTimeout(() => o.remove(), 400); Router.go('home'); };
